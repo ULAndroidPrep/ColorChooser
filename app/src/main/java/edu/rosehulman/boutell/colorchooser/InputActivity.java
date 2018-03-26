@@ -2,6 +2,7 @@ package edu.rosehulman.boutell.colorchooser;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,9 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+
+import static edu.rosehulman.boutell.colorchooser.MainActivity.EXTRA_COLOR;
+import static edu.rosehulman.boutell.colorchooser.MainActivity.EXTRA_MESSAGE;
 
 public class InputActivity extends AppCompatActivity {
 
@@ -30,8 +34,8 @@ public class InputActivity extends AppCompatActivity {
         mLayout = (RelativeLayout) findViewById(R.id.activity_input_layout);
         mEditText = (EditText) findViewById(R.id.activity_input_message);
 
-        mMessage = "Hello World";
-        mCurrentBackgroundColor = Color.GRAY;
+        mMessage = getIntent().getStringExtra(EXTRA_MESSAGE);
+        mCurrentBackgroundColor = getIntent().getIntExtra(EXTRA_COLOR, Color.GRAY);
         updateUI();
 
         Button colorButton = (Button) findViewById(R.id.activity_input_button);
@@ -68,8 +72,12 @@ public class InputActivity extends AppCompatActivity {
                         mCurrentBackgroundColor = selectedColor;
                         mMessage = mEditText.getText().toString();
                         updateUI();
-						// TODO: Use an intent to send info back to activity that called this one for a result.
-					   
+						// DONE: Use an intent to send info back to activity that called this one for a result.
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra(EXTRA_MESSAGE, mMessage);
+                        returnIntent.putExtra(EXTRA_COLOR, mCurrentBackgroundColor);
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
                     }
                 })
                 .setNegativeButton(getString(android.R.string.cancel), null)

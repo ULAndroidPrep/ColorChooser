@@ -1,10 +1,13 @@
 package edu.rosehulman.boutell.colorchooser;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextView;
     private String mMessage = "This is your phone. Please rescue me!";
     private int mBackgroundColor = Color.GREEN;
+
+    public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+    public static final String EXTRA_COLOR = "EXTRA_COLOR";
+    public static final int INPUT_REQUEST_CODE = 42;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +62,16 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.action_info:
-                // TODO: Launch a new Info Activity that is a ScrollingActivity.
-
+                // DONE: Launch a new Info Activity that is a ScrollingActivity.
+                Intent infoIntent = new Intent(this, InfoActivity.class);
+                startActivity(infoIntent);
                 return true;
-
             case R.id.action_change_color:
-                // TODO: Launch the InputActivity to get a result
-
+                // DONE: Launch the InputActivity to get a result
+                Intent inputIntent = new Intent(this, InputActivity.class);
+                inputIntent.putExtra(EXTRA_MESSAGE, mMessage);
+                inputIntent.putExtra(EXTRA_COLOR, mBackgroundColor);
+                startActivityForResult(inputIntent, INPUT_REQUEST_CODE);
                 return true;
 
             case R.id.action_settings:
@@ -75,5 +86,20 @@ public class MainActivity extends AppCompatActivity {
         mLayout.setBackgroundColor(mBackgroundColor);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("CS", "Welcome back!");
+        switch (requestCode) {
+            case INPUT_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    mMessage = data.getStringExtra(EXTRA_MESSAGE);
+                    mBackgroundColor = data.getIntExtra(EXTRA_COLOR, Color.GRAY);
+                    updateUI();
+                }
+                break;
+        }
 
+
+    }
 }
