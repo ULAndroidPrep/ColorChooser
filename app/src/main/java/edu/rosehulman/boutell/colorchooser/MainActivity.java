@@ -3,6 +3,7 @@ package edu.rosehulman.boutell.colorchooser;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +15,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
+import android.net.Uri;
 public class MainActivity extends AppCompatActivity {
 
     private RelativeLayout mLayout;
@@ -39,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO: Send an email with the message field as the body
+                sendEmail();
+
+
+
+
             }
         });
 
@@ -48,6 +54,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Set color and text
         updateUI();
+    }
+
+    private void sendEmail() {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"x@gmail.com"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "From me");
+        intent.putExtra(Intent.EXTRA_TEXT, mMessage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+        // or startActivity(Intent.createChooser(emailIntent, "Send email to yourself..."));
     }
 
     @Override
